@@ -1,14 +1,16 @@
-import { Button } from '@/components/ui/button';
+import { CustomPagination } from '@/components/custom/CustomPagination';
+import { CustomJumbotron } from '@/shop/components/CustomJumbotron';
+import { ProductGrid } from '@/shop/components/ProductGrid';
 
 export const HomePage = () => {
   return (
-    <div>
-      <h1>Hola mundo</h1>
-      <h1 className="font-montserrat">Hola mundo</h1>
-      <h1 className="font-montserrat font-thin">Hola mundo</h1>
-      <h1 className="font-montserrat font-normal">Hola mundo</h1>
-      <h1 className="font-montserrat font-bold">Hola mundo</h1>
-      <Button>Click me</Button>
-    </div>
+    <>
+      <CustomJumbotron
+        title="Nuestros Productos"
+        subtitle="Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal."
+      />
+      <ProductGrid products={[]} />
+      <CustomPagination totalPages={10} />
+    </>
   );
 };
