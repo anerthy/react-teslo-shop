@@ -1,4 +1,5 @@
 import { CustomPagination } from '@/components/custom/CustomPagination';
+import { products } from '@/mocks/products.mock';
 import { CustomJumbotron } from '@/shop/components/CustomJumbotron';
 import { ProductGrid } from '@/shop/components/ProductGrid';
 
@@ -9,7 +10,7 @@ export const HomePage = () => {
         title="Nuestros Productos"
         subtitle="Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal."
       />
-      <ProductGrid products={[]} />
+      <ProductGrid products={products} />
       <CustomPagination totalPages={10} />
     </>
   );
