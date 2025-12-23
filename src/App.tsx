@@ -1,10 +1,9 @@
+import { RouterProvider } from 'react-router';
+import { appRouter } from './app.router';
+
 // TesloShopApp
 function App() {
-  return (
-    <div>
-      <h1>Teslo Shop</h1>
-    </div>
-  );
+  return <RouterProvider router={appRouter} />;
 }
 
 export default App;
