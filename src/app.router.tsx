@@ -1,0 +1,78 @@
+import { lazy } from 'react';
+import { createBrowserRouter, Navigate } from 'react-router';
+import { ShopLayout } from './shop/layouts/ShopLayout';
+import { HomePage } from './shop/pages/home/HomePage';
+import { ProductPage } from './shop/pages/product/ProductPage';
+import { GenderPage } from './shop/pages/Gender/GenderPage';
+import { LoginPage } from './auth/pages/login/LoginPage';
+import { RegisterPage } from './auth/pages/login/register/RegisterPage';
+import { DashboardPage } from './admin/pages/dasboard/DashboardPage';
+import { AdminProductPage } from './admin/pages/product/AdminProductPage';
+import { AdminProductsPage } from './admin/pages/products/AdminProductsPage';
+
+const AuthLayout = lazy(() => import('./auth/layouts/AuthLayout'));
+const AdminLayout = lazy(() => import('./admin/layouts/AdminLayout'));
+
+export const appRouter = createBrowserRouter([
+  // public routes
+  {
+    path: '/',
+    element: <ShopLayout />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: 'product/:id',
+        element: <ProductPage />,
+      },
+      {
+        path: 'gender/:gender',
+        element: <GenderPage />,
+      },
+    ],
+  },
+  // auth routes
+  {
+    path: '/auth',
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/auth/login" />, // protecting the /auth route
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'register',
+        element: <RegisterPage />,
+      },
+    ],
+  },
+  // admin routes
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
+        element: <DashboardPage />,
+      },
+      {
+        path: 'products',
+        element: <AdminProductsPage />,
+      },
+      {
+        path: 'products/:id',
+        element: <AdminProductPage />,
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" />,
+  },
+]);
