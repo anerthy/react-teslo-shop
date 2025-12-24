@@ -1,10 +1,14 @@
-import { Search, ShoppingBag, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useRef, useState, type KeyboardEvent } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useRef, type KeyboardEvent } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router';
+import { cn } from '@/lib/utils';
+import { CustomLogo } from '@/components/custom/CustomLogo';
+
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { gender } = useParams();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('query') || '';
@@ -24,7 +28,6 @@ export const CustomHeader = () => {
     setSearchParams(newSearchParams);
   };
 
-  const [cartCount] = useState(3);
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50">
       <div className="container mx-auto px-4 lg:px-8">
@@ -34,34 +37,47 @@ export const CustomHeader = () => {
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
             </Button>
-            <h1 className="text-xl font-semibold tracking-tight">
+            {/* <h1 className="text-xl font-semibold tracking-tight">
               TESLA STYLE
-            </h1>
+            </h1> */}
+            <CustomLogo subtitle="Shop" />
           </div>
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className={cn(
+                `text-sm font-medium transition-colors hover:text-primary`,
+                !gender ? 'underline underline-offset-4' : ''
+              )}
             >
               Todos
             </Link>
             <Link
               to="/gender/men"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className={cn(
+                `text-sm font-medium transition-colors hover:text-primary`,
+                gender === 'men' ? 'underline underline-offset-4' : ''
+              )}
             >
               Hombres
             </Link>
             <Link
               to="/gender/women"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className={cn(
+                `text-sm font-medium transition-colors hover:text-primary`,
+                gender === 'women' ? 'underline underline-offset-4' : ''
+              )}
             >
               Mujeres
             </Link>
             <Link
               to="/gender/kids"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className={cn(
+                `text-sm font-medium transition-colors hover:text-primary`,
+                gender === 'kids' ? 'underline underline-offset-4' : ''
+              )}
             >
               Niños
             </Link>
@@ -86,14 +102,26 @@ export const CustomHeader = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            <Button variant="ghost" size="icon" className="relative">
+            <Link to="/auth/login">
+              <Button variant="default" size="sm" className="ml-2">
+                Login
+              </Button>
+            </Link>
+
+            <Link to="/admin">
+              <Button variant="destructive" size="sm" className="ml-2">
+                Admin
+              </Button>
+            </Link>
+
+            {/* <Button variant="ghost" size="icon" className="relative">
               <ShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
