@@ -5,7 +5,7 @@ import { HomePage } from './shop/pages/home/HomePage';
 import { ProductPage } from './shop/pages/product/ProductPage';
 import { GenderPage } from './shop/pages/Gender/GenderPage';
 import { LoginPage } from './auth/pages/login/LoginPage';
-import { RegisterPage } from './auth/pages/login/register/RegisterPage';
+import { RegisterPage } from './auth/pages/register/RegisterPage';
 import { DashboardPage } from './admin/pages/dasboard/DashboardPage';
 import { AdminProductPage } from './admin/pages/product/AdminProductPage';
 import { AdminProductsPage } from './admin/pages/products/AdminProductsPage';
