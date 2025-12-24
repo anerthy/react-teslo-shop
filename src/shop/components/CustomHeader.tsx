@@ -1,8 +1,29 @@
 import { Search, ShoppingBag, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
+import { Link, useSearchParams } from 'react-router';
 export const CustomHeader = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const query = searchParams.get('query') || '';
+
+  const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+
+    const newSearchParams = new URLSearchParams();
+
+    const query = inputRef.current?.value;
+    if (!query || query.trim().length === 0) {
+      newSearchParams.delete('query');
+    } else {
+      newSearchParams.set('query', query);
+    }
+
+    setSearchParams(newSearchParams);
+  };
+
   const [cartCount] = useState(3);
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-slate-50">
@@ -20,30 +41,30 @@ export const CustomHeader = () => {
 
           {/* Navigation - Desktop */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a
-              href="#"
+            <Link
+              to="/"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Camisetas
-            </a>
-            <a
-              href="#"
+              Todos
+            </Link>
+            <Link
+              to="/gender/men"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Sudaderas
-            </a>
-            <a
-              href="#"
+              Hombres
+            </Link>
+            <Link
+              to="/gender/women"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Chaquetas
-            </a>
-            <a
-              href="#"
+              Mujeres
+            </Link>
+            <Link
+              to="/gender/kids"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Accesorios
-            </a>
+              Niños
+            </Link>
           </nav>
 
           {/* Search and Cart */}
@@ -52,8 +73,11 @@ export const CustomHeader = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
+                  ref={inputRef}
                   placeholder="Buscar productos..."
-                  className="pl-9 w-64 h-9"
+                  className="pl-9 w-64 h-9 bg-white"
+                  onKeyDown={handleSearch}
+                  defaultValue={query}
                 />
               </div>
             </div>
