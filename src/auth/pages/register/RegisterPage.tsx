@@ -3,14 +3,43 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { useState, type FormEvent } from 'react';
+import { useAuthStore } from '@/admin/store/auth.store';
+import { toast } from 'sonner';
 
 export const RegisterPage = () => {
+  const [isPosting, setIsPosting] = useState(false);
+
+  const navigate = useNavigate();
+  const { register } = useAuthStore();
+
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPosting(true);
+
+    const formData = new FormData(event.target as HTMLFormElement);
+
+    const fullName = formData.get('fullName') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const success = await register(fullName, email, password);
+
+    if (success) {
+      navigate('/admin');
+      return;
+    }
+
+    toast.error('Error al crear la cuenta');
+    setIsPosting(false);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleRegister}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <CustomLogo />
@@ -23,6 +52,7 @@ export const RegisterPage = () => {
                 <Label htmlFor="fullName">Nombre</Label>
                 <Input
                   id="fullName"
+                  name="fullName"
                   type="text"
                   placeholder="Tu nombre"
                   required
@@ -33,6 +63,7 @@ export const RegisterPage = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -49,9 +80,9 @@ export const RegisterPage = () => {
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={isPosting}>
                 Crear cuenta
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
