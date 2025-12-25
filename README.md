@@ -13,3 +13,5 @@ npx shadcn@latest add input
 https://tanstack.com/query/latest/docs/framework/react/installation
 
 https://zustand-demo.pmnd.rs/
+
+https://react-hook-form.com/get-started
