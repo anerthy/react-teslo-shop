@@ -1,9 +1,31 @@
 import React from 'react';
 import { Search, Bell, MessageSquare, Settings, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/auth.store';
+import { useSearchParams } from 'react-router';
 
 export const AdminHeader: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { user, logout } = useAuthStore();
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const query = searchParams.get('query') || undefined;
+
+  const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+
+    const newSearchParams = new URLSearchParams();
+
+    const query = inputRef.current?.value;
+    if (!query || query.trim().length === 0) {
+      newSearchParams.delete('query');
+    } else {
+      newSearchParams.set('query', query);
+    }
+
+    setSearchParams(newSearchParams);
+  };
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 h-18">
@@ -18,6 +40,9 @@ export const AdminHeader: React.FC = () => {
             <input
               type="text"
               placeholder="Search..."
+              ref={inputRef}
+              defaultValue={query}
+              onKeyDown={handleSearch}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
