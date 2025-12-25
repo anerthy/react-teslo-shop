@@ -1,11 +1,13 @@
 import { CustomPagination } from '@/components/custom/CustomPagination';
-import { products } from '@/mocks/products.mock';
 import { CustomJumbotron } from '@/shop/components/CustomJumbotron';
 import { ProductGrid } from '@/shop/components/ProductGrid';
+import { useProducts } from '@/shop/hooks/useProducts';
 import { useParams } from 'react-router';
 
 export const GenderPage = () => {
   const { gender } = useParams();
+
+  const { data } = useProducts();
 
   const genderLabel = {
     men: 'Hombres',
@@ -19,8 +21,8 @@ export const GenderPage = () => {
         title={`Productos para ${genderLabel[gender]}`}
         subtitle="Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal."
       />
-      <ProductGrid products={products} />
-      <CustomPagination totalPages={10} />
+      <ProductGrid products={data?.products || []} />
+      <CustomPagination totalPages={data?.pages || 0} />
     </>
   );
 };
