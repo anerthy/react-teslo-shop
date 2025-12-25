@@ -10,10 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PlusIcon } from 'lucide-react';
+import { currencyFormatter } from '@/lib/currency-formatter';
+import { useProducts } from '@/shop/hooks/useProducts';
+import { PencilIcon, PlusIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 export const AdminProductsPage = () => {
+  const { data } = useProducts();
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -43,39 +47,44 @@ export const AdminProductsPage = () => {
             <TableHead>Imagen</TableHead>
             <TableHead>Nombre</TableHead>
             <TableHead>Precio</TableHead>
-            <TableHead>Categoria</TableHead>
+            <TableHead>Genero</TableHead>
             <TableHead>Inventario</TableHead>
             <TableHead>Tallas</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
-            <TableCell>
-              <img
-                src="https://placehold.co/250x250"
-                alt="Product"
-                className="w-20 h-20 object-cover rounded-md"
-              />
-            </TableCell>
-            <TableCell>Gorra</TableCell>
-            <TableCell className="text-right">$250.00</TableCell>
-            <TableCell>Ropa</TableCell>
-            <TableCell className="text-right">10</TableCell>
-            <TableCell>S, M, L, XL</TableCell>
-            <TableCell className="text-right">
-              <Link
-                className="text-blue-600 hover:underline mr-2"
-                to="/admin/products/t-shirt-teslo"
-              >
-                Editar
-              </Link>
-            </TableCell>
-          </TableRow>
+          {data?.products.map((product) => (
+            <TableRow>
+              <TableCell className="font-medium">{product.slug}</TableCell>
+              <TableCell>
+                <img
+                  src={product.images[0] || 'https://placehold.co/250x250'}
+                  alt={product.title}
+                  className="w-20 h-20 object-cover rounded-md"
+                />
+              </TableCell>
+              <TableCell>{product.title}</TableCell>
+              <TableCell className="text-right">
+                {currencyFormatter(product.price)}
+              </TableCell>
+              <TableCell>{product.gender}</TableCell>
+              <TableCell className="text-right">{product.stock}</TableCell>
+              <TableCell>{product.sizes.join(', ')}</TableCell>
+              <TableCell className="text-center">
+                <Link
+                  className="text-blue-600 hover:underline mr-2"
+                  to={`/admin/products/${product.id}`}
+                >
+                  <PencilIcon className="w-4 h-4 text-blue-500" />
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-      <CustomPagination totalPages={10} />
+      <CustomPagination totalPages={data?.pages || 1} />
     </>
   );
 };
