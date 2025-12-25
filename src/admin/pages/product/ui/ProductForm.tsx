@@ -5,6 +5,9 @@ import { X, SaveAll, Tag, Plus, Upload } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 
+import { useForm } from 'react-hook-form';
+import { cn } from '@/lib/utils';
+
 interface Props {
   title: string;
   subtitle: string;
@@ -16,40 +19,46 @@ const availableSizes = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 export const ProductForm = ({ title, subtitle, product }: Props) => {
   const [dragActive, setDragActive] = useState(false);
 
-  console.log(product);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: product,
+  });
 
-  const addTag = () => {
-    // if (newTag.trim() && !product.tags.includes(newTag.trim())) {
-    // setProduct((prev) => ({
-    //   ...prev,
-    //   tags: [...prev.tags, newTag.trim()],
-    // }));
-    // setNewTag('');
-    // }
-  };
+  // const addTag = () => {
+  //   // if (newTag.trim() && !product.tags.includes(newTag.trim())) {
+  //   // setProduct((prev) => ({
+  //   //   ...prev,
+  //   //   tags: [...prev.tags, newTag.trim()],
+  //   // }));
+  //   // setNewTag('');
+  //   // }
+  // };
 
-  const removeTag = (tagToRemove: string) => {
-    // setProduct((prev) => ({
-    //   ...prev,
-    //   tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    // }));
-  };
+  // const removeTag = (tagToRemove: string) => {
+  //   // setProduct((prev) => ({
+  //   //   ...prev,
+  //   //   tags: prev.tags.filter((tag) => tag !== tagToRemove),
+  //   // }));
+  // };
 
-  const addSize = (size: string) => {
-    // if (!product.sizes.includes(size)) {
-    //   setProduct((prev) => ({
-    //     ...prev,
-    //     sizes: [...prev.sizes, size],
-    //   }));
-    // }
-  };
+  // const addSize = (size: string) => {
+  //   // if (!product.sizes.includes(size)) {
+  //   //   setProduct((prev) => ({
+  //   //     ...prev,
+  //   //     sizes: [...prev.sizes, size],
+  //   //   }));
+  //   // }
+  // };
 
-  const removeSize = (sizeToRemove: string) => {
-    // setProduct((prev) => ({
-    //   ...prev,
-    //   sizes: prev.sizes.filter((size) => size !== sizeToRemove),
-    // }));
-  };
+  // const removeSize = (sizeToRemove: string) => {
+  //   // setProduct((prev) => ({
+  //   //   ...prev,
+  //   //   sizes: prev.sizes.filter((size) => size !== sizeToRemove),
+  //   // }));
+  // };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -73,8 +82,14 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
     const files = e.target.files;
     console.log(files);
   };
+
+  // TODO: remove
+  const onSubmit = (productLike: Product) => {
+    console.log('on submit', { productLike });
+  };
+
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subtitle={subtitle} />
         <div className="flex justify-end mb-10 gap-4">
@@ -109,11 +124,22 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                   </label>
                   <input
                     type="text"
-                    // value={product.title}
-                    // onChange={(e) => handleInputChange('title', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    {...register('title', {
+                      required: true,
+                    })}
+                    className={cn(
+                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      {
+                        'border-red-500 focus:ring-red-500': errors.title,
+                      }
+                    )}
                     placeholder="Título del producto"
                   />
+                  {errors.title && (
+                    <span className="text-red-500">
+                      Este campo es obligatorio
+                    </span>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -123,10 +149,7 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     </label>
                     <input
                       type="number"
-                      // value={product.price}
-                      // onChange={(e) =>
-                      //   handleInputChange('price', parseFloat(e.target.value))
-                      // }
+                      {...register('price')}
                       className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                       placeholder="Precio del producto"
                     />
@@ -138,6 +161,7 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     </label>
                     <input
                       type="number"
+                      {...register('stock')}
                       // value={product.stock}
                       // onChange={(e) =>
                       //   handleInputChange('stock', parseInt(e.target.value))
@@ -154,6 +178,7 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                   </label>
                   <input
                     type="text"
+                    {...register('slug')}
                     // value={product.slug}
                     // onChange={(e) => handleInputChange('slug', e.target.value)}
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -166,6 +191,7 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     Género del producto
                   </label>
                   <select
+                    {...register('gender')}
                     // value={product.gender}
                     // onChange={(e) =>
                     //   handleInputChange('gender', e.target.value)
@@ -184,6 +210,7 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     Descripción del producto
                   </label>
                   <textarea
+                    {...register('description')}
                     // value={product.description}
                     // onChange={(e) =>
                     //   handleInputChange('description', e.target.value)
@@ -416,6 +443,6 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </form>
   );
 };
