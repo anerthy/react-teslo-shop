@@ -1,5 +1,5 @@
 import { tesloApi } from '@/api/teslo-api';
-import type { AuthResponse } from '../interfaces/auth.response';
+import type { AuthResponse } from '../../admin/interfaces/auth.response';
 
 export const checkAuthAction = async (): Promise<AuthResponse> => {
   const token = localStorage.getItem('token');
