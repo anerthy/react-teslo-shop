@@ -100,6 +100,9 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
               <p className="text-sm font-medium text-gray-900 truncate">
                 {user?.fullName}
               </p>
+              <p className="text-xs text-gray-500 truncate">
+                {user?.roles.join(', ')}
+              </p>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
           </div>
