@@ -6,10 +6,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
-import { loginAction } from '@/admin/actions/login.action';
+import { useAuthStore } from '@/admin/store/auth.store';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+
+  const { login } = useAuthStore();
 
   const [isPosting, setIsPosting] = useState(false);
 
@@ -22,18 +24,15 @@ export const LoginPage = () => {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    try {
-      const data = await loginAction(email, password);
+    const success = await login(email, password);
 
-      localStorage.setItem('token', data.token);
-      console.log('redirect to dashboard');
-
+    if (success) {
       navigate('/admin');
-    } catch (error) {
-      toast.error('Credenciales invalidas');
-    } finally {
-      setIsPosting(false);
+      return;
     }
+
+    toast.error('Credenciales invalidas');
+    setIsPosting(false);
   };
 
   return (
