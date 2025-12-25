@@ -11,3 +11,5 @@ https://ui.shadcn.com/docs/installation/vite
 npx shadcn@latest add input
 
 https://tanstack.com/query/latest/docs/framework/react/installation
+
+https://zustand-demo.pmnd.rs/
