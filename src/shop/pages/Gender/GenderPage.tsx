@@ -12,7 +12,7 @@ export const GenderPage = () => {
   const genderLabel = {
     men: 'Hombres',
     women: 'Mujeres',
-    kids: 'Niños',
+    kid: 'Niños',
   };
 
   return (
