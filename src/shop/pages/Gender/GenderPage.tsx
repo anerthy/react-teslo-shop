@@ -22,7 +22,7 @@ export const GenderPage = () => {
         subtitle="Ropa minimalista y elegante inspirada en el diseño futurista de Tesla. Calidad premium para un estilo atemporal."
       />
       <ProductGrid products={data?.products || []} />
-      <CustomPagination totalPages={data?.pages || 0} />
+      <CustomPagination totalPages={data?.pages || 1} />
     </>
   );
 };
