@@ -1,7 +1,10 @@
 import React from 'react';
-import { Search, Bell, MessageSquare, Settings } from 'lucide-react';
+import { Search, Bell, MessageSquare, Settings, LogOut } from 'lucide-react';
+import { useAuthStore } from '../store/auth.store';
 
 export const AdminHeader: React.FC = () => {
+  const { user, logout } = useAuthStore();
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 h-18">
       <div className="flex items-center justify-between">
@@ -35,8 +38,15 @@ export const AdminHeader: React.FC = () => {
             <Settings size={20} />
           </button>
 
+          <button
+            className="p-2 bg-gray-100 text-black hover:bg-gray-200 rounded-lg transition-colors"
+            onClick={logout}
+          >
+            <LogOut size={20} />
+          </button>
+
           <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm cursor-pointer hover:shadow-lg transition-shadow">
-            JD
+            {user?.fullName.substring(0, 2).toUpperCase()}
           </div>
         </div>
       </div>
