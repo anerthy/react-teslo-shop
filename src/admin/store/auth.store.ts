@@ -2,6 +2,7 @@ import type { User } from '@/interfaces/user.interface';
 import { create } from 'zustand';
 import { loginAction } from '../actions/login.action';
 import { checkAuthAction } from '../actions/check-auth.action';
+import { registerAction } from '../actions/register.action';
 
 type AuthStatus = 'authenticated' | 'unauthenticated' | 'checking';
 
@@ -13,6 +14,7 @@ type AuthState = {
   // Getters
   isAdmin(): boolean;
   // Actions
+  register(fullName: string, email: string, password: string): Promise<boolean>;
   login(email: string, password: string): Promise<boolean>;
   logout(): void;
   checkAuthStatus(): Promise<boolean>;
@@ -26,6 +28,29 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   isAdmin(): boolean {
     const roles = get().user?.roles || []; // TODO: Revisar que valide bien
     return roles.includes('admin');
+  },
+
+  register: async (
+    fullName: string,
+    email: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      const data = await registerAction(fullName, email, password);
+
+      localStorage.setItem('token', data.token);
+      set({ user: data.user, token: data.token, authStatus: 'authenticated' });
+
+      return true;
+    } catch (error) {
+      console.log({ error });
+
+      localStorage.removeItem('token');
+      set({ user: null, token: null, authStatus: 'unauthenticated' });
+      return false;
+    }
+
+    return true;
   },
 
   login: async (email: string, password: string): Promise<boolean> => {
