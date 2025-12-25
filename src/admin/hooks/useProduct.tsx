@@ -1,0 +1,18 @@
+import { useQuery } from '@tanstack/react-query';
+import { getProductByIdAction } from '../actions/get-product-by-id.action';
+
+export const useProduct = (id: string) => {
+  const query = useQuery({
+    queryKey: ['product', { id }],
+    queryFn: async () => getProductByIdAction(id),
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!id,
+  });
+
+  // TODO: Mutation
+
+  return {
+    ...query,
+  };
+};
