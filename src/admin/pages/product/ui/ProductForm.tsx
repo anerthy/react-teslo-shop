@@ -149,10 +149,23 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     </label>
                     <input
                       type="number"
-                      {...register('price')}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      {...register('price', {
+                        required: true,
+                        min: 1,
+                      })}
                       placeholder="Precio del producto"
+                      className={cn(
+                        'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                        {
+                          'border-red-500 focus:ring-red-500': errors.price,
+                        }
+                      )}
                     />
+                    {errors.price && (
+                      <span className="text-red-500">
+                        El precio debe ser mayor a 0
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -161,14 +174,23 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     </label>
                     <input
                       type="number"
-                      {...register('stock')}
-                      // value={product.stock}
-                      // onChange={(e) =>
-                      //   handleInputChange('stock', parseInt(e.target.value))
-                      // }
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      {...register('stock', {
+                        required: true,
+                        min: 0,
+                      })}
                       placeholder="Stock del producto"
+                      className={cn(
+                        'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                        {
+                          'border-red-500 focus:ring-red-500': errors.price,
+                        }
+                      )}
                     />
+                    {errors.stock && (
+                      <span className="text-red-500">
+                        El stock debe ser mayor o igual a 0
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -178,12 +200,25 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                   </label>
                   <input
                     type="text"
-                    {...register('slug')}
-                    // value={product.slug}
-                    // onChange={(e) => handleInputChange('slug', e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    {...register('slug', {
+                      required: true,
+                      validate: (value) =>
+                        !/\s/.test(value) ||
+                        'El slug no puede contener espacios',
+                    })}
+                    className={cn(
+                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200',
+                      {
+                        'border-red-500 focus:ring-red-500': errors.slug,
+                      }
+                    )}
                     placeholder="Slug del producto"
                   />
+                  {errors.slug && (
+                    <span className="text-red-500">
+                      {errors.slug.message || 'El slug es obligatorio'}
+                    </span>
+                  )}
                 </div>
 
                 <div>
@@ -192,10 +227,6 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                   </label>
                   <select
                     {...register('gender')}
-                    // value={product.gender}
-                    // onChange={(e) =>
-                    //   handleInputChange('gender', e.target.value)
-                    // }
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="men">Hombre</option>
@@ -210,15 +241,23 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
                     Descripción del producto
                   </label>
                   <textarea
-                    {...register('description')}
-                    // value={product.description}
-                    // onChange={(e) =>
-                    //   handleInputChange('description', e.target.value)
-                    // }
+                    {...register('description', {
+                      required: true,
+                    })}
                     rows={5}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                    className={cn(
+                      'w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none',
+                      {
+                        'border-red-500 focus:ring-red-500': errors.description,
+                      }
+                    )}
                     placeholder="Descripción del producto"
                   />
+                  {errors.description && (
+                    <span className="text-red-500">
+                      La descripción es obligatoria
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
