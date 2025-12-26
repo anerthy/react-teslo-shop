@@ -2,7 +2,7 @@ import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
 import type { Product, Size } from '@/interfaces/product.interface';
 import { X, SaveAll, Tag, Plus, Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 
 import { useForm } from 'react-hook-form';
@@ -12,7 +12,11 @@ interface Props {
   title: string;
   subtitle: string;
   product: Product;
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  onSubmit: (
+    productLike: Partial<Product> & {
+      files?: File[];
+    }
+  ) => Promise<void>;
   isPending: boolean;
 }
 
@@ -26,6 +30,11 @@ const availableSizes: Size[] = [
   'XXL',
   // 'XXXL',
 ];
+
+interface FormInputs extends Product {
+  // Extiende la interfaz Product para usar en el formulario
+  files?: File[];
+}
 
 export const ProductForm = ({
   title,
@@ -43,15 +52,22 @@ export const ProductForm = ({
     getValues, // obtiene los valores actuales del formulario sin necesidad de renderizar de nuevo
     watch, // observa los cambios en los campos del formulario
     setValue,
-  } = useForm({
+  } = useForm<FormInputs>({
     defaultValues: product,
   });
 
   const tagInputRef = useRef<HTMLInputElement>(null);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedSizes = watch('sizes');
   const selectedTags = watch('tags');
   const currentStock = watch('stock');
+
+  const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    setFiles([]);
+  }, [product]);
 
   const addTag = () => {
     const newTag = tagInputRef.current?.value || '';
@@ -99,11 +115,25 @@ export const ProductForm = ({
     setDragActive(false);
     const files = e.dataTransfer.files;
     console.log(files);
+
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     console.log(files);
+
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   return (
@@ -451,6 +481,32 @@ export const ProductForm = ({
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* Imagenes por cargar */}
+              <div
+                className={cn('mt-6 space-y-3', {
+                  hidden: files.length === 0,
+                })}
+              >
+                <h3 className="text-sm font-medium text-slate-700">
+                  Imágenes por cargar
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {files.map((file, index) => (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="Product"
+                      key={index}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  ))}
+                </div>
+                {files.length === 0 && (
+                  <p className="text-sm text-slate-500">
+                    No hay imágenes seleccionadas para cargar.
+                  </p>
+                )}
               </div>
             </div>
 
