@@ -12,6 +12,8 @@ interface Props {
   title: string;
   subtitle: string;
   product: Product;
+  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  isPending: boolean;
 }
 
 const availableSizes: Size[] = [
@@ -25,7 +27,13 @@ const availableSizes: Size[] = [
   // 'XXXL',
 ];
 
-export const ProductForm = ({ title, subtitle, product }: Props) => {
+export const ProductForm = ({
+  title,
+  subtitle,
+  product,
+  onSubmit,
+  isPending,
+}: Props) => {
   const [dragActive, setDragActive] = useState(false);
 
   const {
@@ -98,24 +106,23 @@ export const ProductForm = ({ title, subtitle, product }: Props) => {
     console.log(files);
   };
 
-  // TODO: remove
-  const onSubmit = (productLike: Product) => {
-    console.log('on submit', { productLike });
-  };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex justify-between items-center">
         <AdminTitle title={title} subtitle={subtitle} />
         <div className="flex justify-end mb-10 gap-4">
-          <Button variant="outline">
+          <Button variant="outline" type="button">
             <Link to="/admin/products" className="flex items-center gap-2">
               <X className="w-4 h-4" />
               Cancelar
             </Link>
           </Button>
 
-          <Button>
+          <Button
+            disabled={isPending}
+            type="submit"
+            className="flex items-center gap-2"
+          >
             <SaveAll className="w-4 h-4" />
             Guardar cambios
           </Button>
